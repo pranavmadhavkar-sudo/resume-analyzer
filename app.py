@@ -2,10 +2,16 @@
 from flask import Flask, render_template, request
 import PyPDF2
 import spacy
+from flask import send_file
 latest_data = {}
 
 app = Flask(__name__)
-nlp = spacy.load("en_core_web_sm")
+try:
+    nlp = spacy.load("en_core_web_sm")
+except:
+    import subprocess
+    subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"])
+    nlp = spacy.load("en_core_web_sm")
 
 # 🔹 Skills List
 SKILLS = [
@@ -178,6 +184,7 @@ def home():
                 "ai_feedback": ai_feedback
 }
 
+
             return render_template(
              'index.html',
               resume_text=highlighted_text,
@@ -189,8 +196,8 @@ def home():
               missing_keywords=missing_keywords,
               ai_feedback=ai_feedback
 )
-            
-from flask import send_file
+    return render_template('index.html')            
+
 
 @app.route('/download')
 def download():
@@ -203,7 +210,7 @@ def download():
     )
     return send_file("report.pdf", as_attachment=True)
 
-    return render_template('index.html')
+    
 import os
 
 if __name__ == "__main__":
