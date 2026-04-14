@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resume Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<h1>🚀 AI Resume Analyzer</h1>
+
+<div class="container">
+
+    <div class="card">
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="resume" required>
+
+            <textarea name="job_desc" placeholder="Paste Job Description here..." rows="5"></textarea>
+
+            <button type="submit">🚀 Analyze Resume</button>
+        </form>
+    </div>
+    <div id="loader" style="display:none;">
+    <div class="spinner"></div>
+    <p>Analyzing Resume...</p>
+</div>
+
+<script>
+    const form = document.querySelector("form");
+    form.addEventListener("submit", function() {
+        document.getElementById("loader").style.display = "flex";
+    });
+</script>
+
+    {% if resume_text %}
+    <div class="card">
+        <h2>📄 Resume Text</h2>
+        <p>{{ resume_text|safe }}</p>
+    </div>
+    {% endif %}
+
+    {% if skills %}
+    <div class="card">
+        <h2>📊 Analysis</h2>
+        <p><strong>Skills:</strong> {{ skills | join(', ') }}</p>
+       <p><strong>ATS Score:</strong></p>
+
+<div style="background:#ddd; border-radius:10px;">
+    <div style="width:{{ score }}%; background:#4CAF50; color:white; padding:5px; border-radius:10px;">
+        {{ score }}%
+    </div>
+</div>
+        <p><strong>Job Match:</strong> {{ match_percent }}%</p>
+        <p><strong>Resume Strength:</strong> {{ strength }}</p>
+    </div>
+    <a href="/download">
+    <button>📄 Download Report</button>
+</a>
+    {% endif %}
+
+    
+
+    {% if suggestions %}
+    <div class="card">
+        <h2>💡 Suggestions</h2>
+        <ul>
+            {% for s in suggestions %}
+                <li>{{ s }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if missing_keywords %}
+    <div class="card">
+        <h2>⚠ Missing Keywords</h2>
+        <ul>
+            {% for word in missing_keywords %}
+                <li>{{ word }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if ai_feedback %}
+    <div class="card">
+        <h2>🤖 AI Feedback</h2>
+        <pre>{{ ai_feedback }}</pre>
+    </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
